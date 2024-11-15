@@ -2,7 +2,7 @@
 # exit on error
 set -o errexit
 
-python pip install -r requirements.txt
+python pip3 install -r requirements.txt
 
 python manage.py collectstatic --noinput 
 python manage.py makemigrations --noinput
