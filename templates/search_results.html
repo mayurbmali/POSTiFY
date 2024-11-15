@@ -1,0 +1,45 @@
+<!-- search_results.html -->
+{% extends 'base.html' %}
+
+{% block title %}Search Results - POST!FY {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Search Results for: "{{ query }}"</h2>
+        <div class="row">
+            {% if posts %}
+            {% for post in posts %}
+            <div class="col-12 d-flex align-items-stretch">
+                <div class="card shadow-sm mb-3 w-100">
+                    <div class="card-body">
+                        <!-- Link to post_detail page when clicking on the title -->
+                        <h5 class="card-title">
+                            <a href="{% url 'post_detail' post.id %}">{{ post.user.username }}</a>
+                        </h5>
+                        <!-- Preview the post content and link to full content -->
+                        <p class="card-text">
+                            <a href="{% url 'post_detail' post.id %}">{{ post.content|truncatewords:20 }}</a>
+                        </p>
+                        <!-- Display the attachment name, link to download in post_detail -->
+                        {% if post.file %}
+                            <p class="card-text">
+                                <small class="text-muted">File: {{ post.file.name }}</small>
+                            </p>
+                            <a href="{% url 'post_detail' post.id %}" class="btn btn-outline-primary mt-2">
+                                View Full Post and Attachment
+                            </a>
+                        {% else %}
+                            <a href="{% url 'post_detail' post.id %}" class="btn btn-outline-primary mt-2">
+                                View Full Post
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+            {% else %}
+                <p>No results found for your query.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
