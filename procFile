@@ -1,1 +1,1 @@
-web: gunicorn name.wsgi:application
+web: gunicorn LCA3.wsgi:application
