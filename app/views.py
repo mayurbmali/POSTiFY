@@ -4,9 +4,10 @@ from .models import Post, Profile, Like, Comment
 from .forms import SignUpForm, LoginForm, ProfileForm, PostForm, CommentForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.http import FileResponse, HttpResponseForbidden
+from django.http import FileResponse, HttpResponseForbidden, HttpResponse
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib import messages
 
 def home(request):
     posts_list = Post.objects.all().order_by('-created_at') 
@@ -83,10 +84,24 @@ def new_post(request):
     
     return render(request, 'new_post.html', {'form': form})
 
+@login_required
 def download_file(request, post_id):
+    """Allows the user to download the file associated with a post."""
     post = get_object_or_404(Post, id=post_id)
+
+    if not post.file:
+        messages.error(request, "No file is attached to this post.")
+        return redirect('home')  # Redirect to an appropriate page
+
     file_path = post.file.path
-    return FileResponse(open(file_path, 'rb'), as_attachment=True)
+    try:
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{post.file.name.split("/")[-1]}"'
+            return response
+    except FileNotFoundError:
+        messages.error(request, "The file is missing.")
+        return redirect('home')
 
 
 def search(request):

@@ -17,5 +17,6 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post_detail, name='post_detail'), 
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
+    path('accounts/login/', views.login_view, name='login'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
